@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LibraryManagementSystemAPI.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Trining_RESTApi.Data.Models;
 using Trining_RESTApi.DTOs;
 using Trining_RESTApi.Services.Interfaces;
@@ -20,14 +22,18 @@ namespace Trining_RESTApi.Controllers
         public async Task<IActionResult> GetByBook(int bookId) => Ok(await _reviewService.GetByBookAsync(bookId));
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateReviwDto dto) => Created(string.Empty, await _reviewService.CreateAsync(dto));
+        public async Task<IActionResult> Create(CreateReviwDto dto)
+        {
+            var userId = User.FindFirstValue("uid");
+            return Created(string.Empty, await _reviewService.CreateAsync(dto, userId));
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id , UpdateReviewDto dto)
         {
-            if(id != dto.Id) return BadRequest();
+            if (id != dto.Id) throw new BadRequestException("id mismatch");
             var success = await _reviewService.UpdateAsync(dto);
-            return success ? NoContent() : NotFound();
+            return NoContent();
         }
     }
 }

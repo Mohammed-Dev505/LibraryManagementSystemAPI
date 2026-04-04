@@ -4,7 +4,7 @@ namespace Trining_RESTApi.Services.Interfaces
 {
     public interface IBorrowService
     {
-        Task<BorrowDto> CreateAsync(CreateBorrowDto dto);
+        Task<BorrowDto> CreateAsync(CreateBorrowDto dto , string userId);
         Task<bool> UpdateStatusAsync(UpdateBorrowStatusDto dto);
         Task<IEnumerable<BorrowDto>> GetBorrowsByUserAsync(string userId);
     }

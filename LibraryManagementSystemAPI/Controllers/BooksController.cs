@@ -22,7 +22,7 @@ namespace Trining_RESTApi.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var book = await _bookService.GetByIdAsync(id);
-            return book == null ? NotFound() : Ok(book);
+            return Ok(book);
         }
         [HttpPost]
         public async Task<IActionResult> Create(CreateBookDto dto)
@@ -33,15 +33,15 @@ namespace Trining_RESTApi.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id , UpdateBookDto dto)
         {
-            if (id != dto.Id) return BadRequest("Id is match");
+            if (id != dto.Id) return BadRequest("Id mismatch");
             var success = await _bookService.UpdateAsync(dto);
-            return success ? NoContent() : NotFound();
+            return NoContent();
         }
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
            var success = await _bookService.DeleteBookAsync(id);
-            return success ? NoContent() : NotFound();
+            return NoContent();
         }
     }
 }
