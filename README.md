@@ -1,4 +1,4 @@
-﻿# 📚 Library Management System – ASP.NET Core Web API
+# 📚 Library Management System – ASP.NET Core Web API
 
 A **clean, structured, and production-oriented Library Management System API**
 built with **ASP.NET Core Web API**.
