@@ -12,7 +12,7 @@ using Trining_RESTApi.Data;
 namespace LibraryManagementSystemAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260314233446_InitialCreate")]
+    [Migration("20260406232831_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -191,9 +191,6 @@ namespace LibraryManagementSystemAPI.Migrations
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BookId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CopiesAvailable")
                         .HasColumnType("int");
 
@@ -216,8 +213,6 @@ namespace LibraryManagementSystemAPI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("BookId");
 
                     b.ToTable("Books");
                 });
@@ -416,10 +411,6 @@ namespace LibraryManagementSystemAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Trining_RESTApi.Data.Models.Book", null)
-                        .WithMany("Books")
-                        .HasForeignKey("BookId");
-
                     b.Navigation("Author");
                 });
 
@@ -468,8 +459,6 @@ namespace LibraryManagementSystemAPI.Migrations
 
             modelBuilder.Entity("Trining_RESTApi.Data.Models.Book", b =>
                 {
-                    b.Navigation("Books");
-
                     b.Navigation("Reviews");
                 });
 

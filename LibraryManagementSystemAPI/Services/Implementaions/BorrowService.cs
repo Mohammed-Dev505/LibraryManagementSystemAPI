@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Exceptions;
+using LibraryManagementSystemAPI.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Trining_RESTApi.Data;
@@ -22,6 +24,9 @@ namespace Trining_RESTApi.Services.Implementaions
         }
         public async Task<BorrowDto?> CreateAsync(CreateBorrowDto dto , string userId)
         {
+            var borrowExists = _context.Borrows.Any(a => a.UserId == userId && a.BookId == dto.BookId && a.ReturnDate == null);
+            if (borrowExists)
+                throw new BadRequestException($"User already has an active borrowing for this book");
             var borrow = _mapper.Map<Borrow>(dto);
             if (borrow == null) throw new BadRequestException("Falid to map borrow the provided data");
             borrow.UserId = userId;
@@ -30,10 +35,18 @@ namespace Trining_RESTApi.Services.Implementaions
             return _mapper.Map<BorrowDto>(borrow);   
         }
 
-        public async Task<IEnumerable<BorrowDto>> GetBorrowsByUserAsync(string userId)
+        public async Task<PagedResult<BorrowDto>> GetBorrowsByUserAsync(string userId , PaginationParams pagination)
         {
-            var borrowing = await _context.Borrows.Where(a => a.UserId == userId).Include(a => a.User).Include(a => a.Book).ThenInclude(a => a.Author).AsNoTracking().ToListAsync();
-            return _mapper.Map<List<BorrowDto>>(borrowing);
+            var query = _context.Borrows.Where(a => a.UserId == userId).Include(a => a.User).Include(a => a.Book).AsNoTracking().AsQueryable();
+            var pagedBorrow = await query.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
+            return new PagedResult<BorrowDto>
+            {
+                Data = _mapper.Map<IEnumerable<BorrowDto>>(pagedBorrow.Data),
+                PageNumber = pagedBorrow.PageNumber,
+                PageSize = pagedBorrow.PageSize,
+                TotalCount = pagedBorrow.TotalCount,
+                TotalPages = pagedBorrow.TotalPages
+            };
         }
 
         public async Task<bool> UpdateStatusAsync(UpdateBorrowStatusDto dto)

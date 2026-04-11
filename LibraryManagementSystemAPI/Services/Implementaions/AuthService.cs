@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystemAPI.Data;
+﻿using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

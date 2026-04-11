@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystemAPI.Exceptions;
+﻿using LibraryManagementSystemAPI.Data.Models;
+using LibraryManagementSystemAPI.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,7 @@ namespace Trining_RESTApi.Controllers
         public ReviewsController(IReviewService reviewService) => _reviewService = reviewService;
 
         [HttpGet("book/{bookId}")]
-        public async Task<IActionResult> GetByBook(int bookId) => Ok(await _reviewService.GetByBookAsync(bookId));
+        public async Task<IActionResult> GetByBook(int bookId , [FromQuery] PaginationParams parameters) => Ok(await _reviewService.GetByBookAsync(bookId , parameters));
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateReviwDto dto)

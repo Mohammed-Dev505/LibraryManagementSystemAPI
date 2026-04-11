@@ -1,4 +1,5 @@
-﻿using Trining_RESTApi.DTOs;
+﻿using LibraryManagementSystemAPI.Data.Models;
+using Trining_RESTApi.DTOs;
 
 namespace Trining_RESTApi.Services.Interfaces
 {
@@ -6,6 +7,6 @@ namespace Trining_RESTApi.Services.Interfaces
     {
         Task<ReviewDto> CreateAsync(CreateReviwDto dto , string userId);
         Task<bool> UpdateAsync(UpdateReviewDto dto);
-        Task<IEnumerable<ReviewDto>> GetByBookAsync(int bookId);
+        Task<PagedResult<ReviewDto>> GetByBookAsync(int bookId , PaginationParams parameters);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Exceptions;
+using LibraryManagementSystemAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Security.AccessControl;
 using Trining_RESTApi.Data;
@@ -37,10 +39,20 @@ namespace Trining_RESTApi.Services.Implementaions
             return true;
         }
 
-        public async Task<IEnumerable<AuthorDto>> GetAllAuthorsAsync()
+        public async Task<PagedResult<AuthorDto>> GetAllAsync(AuthorParams pagination)
         {
-            var authors = await _context.Authors.AsNoTracking().ToListAsync();
-            return _mapper.Map<List<AuthorDto>>(authors);
+            var query = _context.Authors.AsNoTracking().AsQueryable();
+            if (!string.IsNullOrEmpty(pagination.Search))
+                query = query.Where(a => a.Name.Contains(pagination.Search));
+            var pagedAuthors = await query.ToPagedResultAsync(pagination.PageNumber, pagination.PageSize);
+            return new PagedResult<AuthorDto>
+            {
+                Data = _mapper.Map<IEnumerable<AuthorDto>>(pagedAuthors.Data),
+                PageNumber = pagedAuthors.PageNumber,
+                PageSize = pagedAuthors.PageSize,
+                TotalCount = pagedAuthors.TotalCount,
+                TotalPages = pagedAuthors.TotalPages
+            };
         }
 
         public async Task<AuthorDto?> GetAuthorByIdAsync(int id)

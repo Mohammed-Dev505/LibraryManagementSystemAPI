@@ -1,4 +1,4 @@
-﻿namespace LibraryManagementSystemAPI.Data
+﻿namespace LibraryManagementSystemAPI.Data.Models
 {
     public class JwtSettings
     {

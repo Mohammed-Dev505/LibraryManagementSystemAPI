@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryManagementSystemAPI.Data
+namespace LibraryManagementSystemAPI.Data.Models
 {
     public class TokenRequestModel
     {

@@ -19,7 +19,6 @@ namespace Trining_RESTApi.Data.Models
 
         public virtual Author Author { get; set; }
 
-        public virtual ICollection<Book> Books { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
     }
 }

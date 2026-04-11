@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LibraryManagementSystemAPI.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Trining_RESTApi.Data.Models;
@@ -16,9 +17,9 @@ namespace Trining_RESTApi.Controllers
         public AuthorsController(IAuthorService authorService) => _authorService = authorService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] AuthorParams pagination)
         {
-            var authors = await _authorService.GetAllAuthorsAsync();
+            var authors = await _authorService.GetAllAsync(pagination);
             return Ok(authors);
         }
         [HttpGet("{id:int}")]

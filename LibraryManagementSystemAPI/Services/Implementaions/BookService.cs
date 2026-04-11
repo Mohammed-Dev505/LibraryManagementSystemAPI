@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Exceptions;
+using LibraryManagementSystemAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Trining_RESTApi.Data;
@@ -36,10 +38,22 @@ namespace Trining_RESTApi.Services.Implementaions
             return true;
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllAsync()
+        public async Task<PagedResult<BookDto>> GetAllAsync(BookParams pagination)
         {
-            var books = await _context.Books.Include(a => a.Author).AsNoTracking().ToListAsync();
-            return _mapper.Map<IEnumerable<BookDto>>(books);
+            var query =  _context.Books.Include(b => b.Author).AsNoTracking().AsQueryable();
+            if (!string.IsNullOrEmpty(pagination.AuthorName))
+                query = query.Where(a => a.Author.Name.Contains(pagination.AuthorName));
+            if(!string.IsNullOrEmpty(pagination.Title))
+                query = query.Where(b => b.Title.Contains(pagination.Title));
+            var Pagedbook = await query.ToPagedResultAsync(pagination.PageNumber , pagination.PageSize);
+            return new PagedResult<BookDto>
+            {
+                Data = _mapper.Map<IEnumerable<BookDto>>(Pagedbook.Data),
+                PageNumber = Pagedbook.PageNumber,
+                PageSize = Pagedbook.PageSize,
+                TotalCount = Pagedbook.TotalCount,
+                TotalPages = Pagedbook.TotalPages
+            };
         }
 
         public async Task<BookDto?> GetByIdAsync(int id)

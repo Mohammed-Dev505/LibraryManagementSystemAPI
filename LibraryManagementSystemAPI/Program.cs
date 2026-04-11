@@ -1,4 +1,4 @@
-using LibraryManagementSystemAPI.Data;
+using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Middleware;
 using LibraryManagementSystemAPI.Services.Implementaions;
 using LibraryManagementSystemAPI.Services.Interfaces;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using LibraryManagementSystemAPI.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.AccessControl;
@@ -16,7 +17,7 @@ namespace Trining_RESTApi.Controllers
         public BooksController(IBookService bookService) => _bookService = bookService;
 
         [HttpGet("books")]
-        public async Task<IActionResult> GetAll() => Ok(await _bookService.GetAllAsync()); 
+        public async Task<IActionResult> GetAll([FromQuery]BookParams pagination) => Ok(await _bookService.GetAllAsync(pagination)); 
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)

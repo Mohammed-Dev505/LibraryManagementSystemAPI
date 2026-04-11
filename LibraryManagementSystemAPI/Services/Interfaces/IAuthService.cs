@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystemAPI.Data;
+﻿using LibraryManagementSystemAPI.Data.Models;
 
 namespace LibraryManagementSystemAPI.Services.Interfaces
 {

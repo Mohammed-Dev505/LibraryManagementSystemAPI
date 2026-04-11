@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using LibraryManagementSystemAPI.Data.Models;
 using LibraryManagementSystemAPI.Exceptions;
+using LibraryManagementSystemAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Trining_RESTApi.Data;
 using Trining_RESTApi.Data.Models;
@@ -27,11 +29,18 @@ namespace Trining_RESTApi.Services.Implementaions
             return _mapper.Map<ReviewDto>(review);
         }
 
-        public async Task<IEnumerable<ReviewDto>> GetByBookAsync(int bookId)
+        public async Task<PagedResult<ReviewDto>> GetByBookAsync(int bookId , PaginationParams parameters)
         {
-            var review = await _context.Reviews.Where(a => a.BookId ==  bookId).Include(a => a.User).Include(a => a.Book).ThenInclude(a => a.Author).AsNoTracking().ToListAsync();
-            if (review == null || review.Count < 1) throw new NotFoundException($"Review with BookID {bookId} not found");
-            return _mapper.Map<List<ReviewDto>>(review);
+            var query = _context.Reviews.Where(a => a.BookId == bookId).Include(r => r.User).Include(r => r.Book).AsNoTracking().AsQueryable();
+            var pagedReview = await query.ToPagedResultAsync(parameters.PageNumber, parameters.PageSize);
+            return new PagedResult<ReviewDto>
+            {
+                Data = _mapper.Map<IEnumerable<ReviewDto>>(pagedReview.Data),
+                PageNumber = parameters.PageNumber,
+                PageSize = parameters.PageSize,
+                TotalCount = pagedReview.TotalCount,
+                TotalPages = pagedReview.TotalPages
+            };
         }
 
         public async Task<bool> UpdateAsync(UpdateReviewDto dto)

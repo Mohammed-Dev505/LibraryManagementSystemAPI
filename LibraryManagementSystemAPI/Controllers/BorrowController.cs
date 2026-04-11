@@ -1,4 +1,5 @@
-﻿using LibraryManagementSystemAPI.Exceptions;
+﻿using LibraryManagementSystemAPI.Data.Models;
+using LibraryManagementSystemAPI.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -20,10 +21,10 @@ namespace Trining_RESTApi.Controllers
         public BorrowController(IBorrowService borrowService) => _borrowService = borrowService;
 
         [HttpGet("")]
-        public async Task<IActionResult> GetByUser()
+        public async Task<IActionResult> GetByUser([FromQuery] PaginationParams pagination)
         {
             var userId = User.FindFirstValue("uid");
-            return Ok(await _borrowService.GetBorrowsByUserAsync(userId));
+            return Ok(await _borrowService.GetBorrowsByUserAsync(userId , pagination));
         }
 
         [HttpPost]
