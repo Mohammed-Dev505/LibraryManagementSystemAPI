@@ -13,12 +13,20 @@ using Trining_RESTApi.Data.Models;
 using Trining_RESTApi.Mapping;
 using Trining_RESTApi.Services.Implementaions;
 using Trining_RESTApi.Services.Interfaces;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using LibraryManagementSystemAPI.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+// Add FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
