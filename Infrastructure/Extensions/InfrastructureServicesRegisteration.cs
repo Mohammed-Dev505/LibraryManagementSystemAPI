@@ -1,0 +1,27 @@
+﻿using Application.Services.Interfaces;
+using Infrastructure.Repositories;
+using LibraryManagementSystemAPI.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace LibraryManagementSystemAPI.Infrastructure.Extensions
+{
+    public static class InfrastructureServicesRegisteration
+    {
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services , IConfiguration configuration)
+        {
+            services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("MyCon")
+                    , b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+            });
+
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;    
+        }
+    }
+}
